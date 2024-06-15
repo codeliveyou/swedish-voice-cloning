@@ -1,34 +1,31 @@
-from pydub import AudioSegment
-import json
 import os
+import json
+import numpy as np
+import librosa
+from pydub import AudioSegment
+from pydub.silence import split_on_silence
 
-audio = AudioSegment.from_mp3("./source_data/source.mp3")
+# Load the full audio
+audio_file_path = './source_data/source.mp3'
+audio = AudioSegment.from_mp3(audio_file_path)
 
-with open("./preparing_dataset/transcription1.txt", "r", encoding="utf-8") as file:
-    transcription = file.read().strip().split('. ')
+# Parameters for splitting the audio on silence
+min_silence_len = 500  # in milliseconds
+silence_thresh = audio.dBFS - 14  # adjust this threshold as needed
 
-transcription = [sentence.strip() for sentence in transcription if sentence.strip()]
+# Split the audio where silence is detected
+audio_chunks = split_on_silence(audio, min_silence_len=min_silence_len, silence_thresh=silence_thresh)
 
-segments_dir = "./preparing_dataset/segments"
+# Directory to save the segments
+segments_dir = "./preparing_dataset/dataset"
 os.makedirs(segments_dir, exist_ok=True)
 
-total_duration_ms = len(audio)
-segment_duration_ms = total_duration_ms / len(transcription)
-
+# Create the dataset
 dataset = []
-
-for i, sentence in enumerate(transcription):
-    start_time = int(i * segment_duration_ms)
-    end_time = int(start_time + segment_duration_ms)
-    segment = audio[start_time:end_time]
-    
-    segment_filename = f"{segments_dir}/segment_{i+1}.mp3"
-    segment.export(segment_filename, format="mp3")
-    
-    dataset.append({"audio": segment_filename, "text": sentence + '.'})
-
-dataset_path = f"{segments_dir}/dataset.json"
-with open(dataset_path, "w", encoding="utf-8") as f:
-    json.dump(dataset, f, ensure_ascii=False, indent=2)
+i = 0
+for chunk in audio_chunks:
+    segment_filename = os.path.join(segments_dir, f"segment_{i+1}.mp3")
+    chunk.export(segment_filename, format="mp3")
+    i += 1
 
 print("Dataset creation completed!")
