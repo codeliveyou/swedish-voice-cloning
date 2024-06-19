@@ -32,7 +32,7 @@ def create_training_data(audio_path: str, transcription_path: str, output_data_p
             with open(os.path.join(current_path, f'{i:03d}_({num_combination})_transcription.txt'), 'w', encoding='utf-8') as text_file:
                 text_file.write(text)
             
-            data.append({"audio": f'{num_combination:02d}_combination/{i:03d}_({num_combination})_audio.wav', "text": text})
+            data.append({"audio": f'training_data/{num_combination:02d}_combination/{i:03d}_({num_combination})_audio.wav', "text": text})
 
         with open(os.path.join(output_data_path, f'{num_combination:02d}_data.json'), 'w', encoding='utf-8') as json_file:
             json.dump(data, json_file, ensure_ascii=False, indent=4)
