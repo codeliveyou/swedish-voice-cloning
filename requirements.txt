@@ -1,0 +1,12 @@
+pydub
+openai-whisper
+pysrt
+numpy
+librosa
+transformers
+accelerate
+datasets
+torch
+torchinfo
+soundfile
+
