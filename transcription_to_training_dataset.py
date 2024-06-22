@@ -45,4 +45,4 @@ audio_path = './source_data/voice_recording.mp3'
 transcription_path = './transcription_data/voice_recording_transcription.srt'
 output_data_path = './training_data'
 
-create_training_data(audio_path, transcription_path, output_data_path, 16000, 1, 10)
+create_training_data(audio_path, transcription_path, output_data_path, 22050, 113, 114)
