@@ -9,7 +9,7 @@ def create_training_data(audio_path: str, transcription_path: str, output_data_p
         return (srt_time.hours * 3600 + srt_time.minutes * 60 + srt_time.seconds) * 1000 + srt_time.milliseconds
 
     logging.basicConfig(filename=os.path.join(output_data_path, 'audio_processing.log'), level=logging.ERROR)
-    
+
     audio = AudioSegment.from_file(audio_path)
     audio = audio.set_frame_rate(target_sample_rate)
 
@@ -31,12 +31,12 @@ def create_training_data(audio_path: str, transcription_path: str, output_data_p
             audio_segment.export(os.path.join(current_path, f'{i:03d}_({num_combination})_audio.wav'), format='wav')
             with open(os.path.join(current_path, f'{i:03d}_({num_combination})_transcription.txt'), 'w', encoding='utf-8') as text_file:
                 text_file.write(text)
-            
+
             data.append({"audio": f'training_data/{num_combination:02d}_combination/{i:03d}_({num_combination})_audio.wav', "text": text})
 
         with open(os.path.join(output_data_path, f'{num_combination:02d}_data.json'), 'w', encoding='utf-8') as json_file:
             json.dump(data, json_file, ensure_ascii=False, indent=4)
-        
+
         print(f"Audio segments and corresponding text files for {num_combination} combinations have been saved.")
 
     print("Processing complete.")
